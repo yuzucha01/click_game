@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>GAME</title>
+    <style>
+      .puzzle {
+        width: 70px;
+        height: 70px;
+        border: 15px solid brown;
+        border-radius: 20px;
+        text-align: center;
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body onload="stanby()">
+    <table id="table"></table>
+    <script>
+      "use strict";
+
+      var puzzles = []; //パズル
+      var count = 0; //カウンター
+      var flag = false; //パズルの初期位置をシャッフル際のフラグ
+
+      function stanby() {
+        //パズルのスタンバイ
+        document.getElementById("table");
+        for (var i = 0; i < 3; i++) {
+          var tr = document.createElement("tr"); //行生成
+          for (var j = 0; j < 3; j++) {
+            var td = document.createElement("td"); //パズルのマスを作成
+            var idx = i * 3 + j;
+            td.className = "puzzle";
+            td.idx = idx;
+            td.value = idx;
+            td.textContent = idx == 0 ? "" : idx;
+            td.onclick = click;
+            tr.appendChild(td);
+            puzzles.push(td);
+          }
+          table.appendChild(tr);
+        }
+
+        for (var i = 0; i < 100; i++) {
+          click({ srcElement: { idx: Math.floor(Math.random() * 9) } }); //パズルのシャッフル
+        }
+        flag = true;
+        document.getElementById("count").textContent = count;
+      }
+
+      function click(e) {
+        //パズルがクリックされたら
+        var i = e.srcElement.idx; //インデックス番号を取得
+
+        if (i - 3 >= 0 && puzzles[i - 3].value == 0) {
+          //上と比較
+          swap(i, i - 3);
+        } else if (i + 3 < 9 && puzzles[i + 3].value == 0) {
+          //下と比較
+          swap(i, i + 3);
+        } else if (i % 3 != 0 && puzzles[i - 1].value == 0) {
+          //左と比較
+          swap(i, i - 1);
+        } else if (i % 3 != 2 && puzzles[i + 1].value == 0) {
+          //右と比較
+          swap(i, i + 1);
+        }
+      }
+
+      function swap(i, j) {
+        //スライドする値の変更
+        var tmp = puzzles[i].value;
+        puzzles[i].textContent = puzzles[j].textContent;
+        puzzles[i].value = puzzles[j].value;
+        puzzles[j].textContent = tmp;
+        puzzles[j].value = tmp;
+        if (flag == true) {
+          count++;
+          document.getElementById("count").textContent = count;
+        }
+      }
+    </script>
+    <h2>クリック回数</h2>
+    <span id="count"></span>クリック
+  </body>
+</html>
